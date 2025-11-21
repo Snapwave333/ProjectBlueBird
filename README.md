@@ -1,280 +1,139 @@
-# 🃏 ANTE Poker Platform
 
-**A Solana-based decentralized poker ecosystem powered by the $ANTE token.**
-
-ANTE Poker is a full-stack Web3 poker platform that combines traditional poker gameplay with blockchain technology. Players connect their Solana wallets (Phantom), use $ANTE tokens for buy-ins, and participate in cash games, tournaments, and community events.
-
-## ✨ Features
-
-### 🎮 Core Gameplay
-- **Real-time Multiplayer Poker**: Texas Hold'em with up to 9 players
-- **Cash Games**: User-generated tables with custom blinds and buy-ins
-- **Tournaments**: Monthly tournaments with prize pools
-- **Bot Opponents**: AI players for solo testing and practice
-- **Game Lobby**: Browse and join available cash games
-
-### 💰 Tokenomics & Rewards
-- **$ANTE Token**: Solana SPL token for all in-game transactions
-- **Rake System**: 2% rake automatically collected from every pot
-- **Monthly Rewards**: Top 3 players receive payouts from rake pool
-- **Bad Beat Jackpot**: Qualifying bad beats (Aces full of Kings or better) logged
-- **Leaderboard**: Track hands won, hands played, and total winnings
-
-### 🛒 Ecosystem Features
-- **Merch Store**: Purchase exclusive ANTE gear with $ANTE tokens
-- **User-Generated Games**: Host your own cash games (minimum balance required)
-- **Wallet Integration**: Seamless Solana wallet connection (Phantom, Solflare, etc.)
-- **Mock Mode**: Full-featured development mode for testing without real tokens
-
-### 🏆 Monthly Ecosystem Cycle
-1. **Play**: Users play cash games and tournaments
-2. **Collect Rake**: 2% rake automatically deducted from pots
-3. **Reward Top Players**: Monthly distribution to top 3 players by hands won
-4. **Reset Pool**: Rake pool resets and cycle begins again
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ and npm
-- MongoDB (local or cloud)
-- Solana wallet (Phantom recommended)
-
-### Installation
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd ANTE_Project_PR
-
-# Install backend dependencies
-cd backend
-npm install
-
-# Install frontend dependencies
-cd ../texas-holdem-demo
-npm install
-
-# Set up environment variables
-cp backend/env.example backend/.env
-cp texas-holdem-demo/env.example texas-holdem-demo/.env.local
-
-# Edit .env files with your configuration
-```
-
-### Running Locally
-
-```bash
-# Terminal 1: Start backend
-cd backend
-npm run dev
-
-# Terminal 2: Start frontend
-cd texas-holdem-demo
-npm run dev
-```
-
-Visit `http://localhost:3000` to access the application.
-
-## 🏗️ Architecture
-
-### Tech Stack
-
-**Backend:**
-- Node.js + Express
-- TypeScript
-- MongoDB (Mongoose)
-- Socket.IO (real-time communication)
-- Solana Web3.js (blockchain integration)
-
-**Frontend:**
-- Next.js 14
-- React
-- Solana Wallet Adapter
-- Tailwind CSS
-- Socket.IO Client
-
-**Game Engine:**
-- `@idealic/poker-engine` (wrapped by custom GameController)
-
-### Project Structure
-
-```
-ANTE_Project_PR/
-├── backend/                 # Express API server
-│   ├── controllers/         # Request handlers
-│   ├── models/             # MongoDB schemas
-│   ├── routes/             # API routes
-│   ├── services/           # Business logic
-│   └── src/                # Core game logic
-├── texas-holdem-demo/      # Next.js frontend
-│   ├── src/
-│   │   ├── app/           # Next.js app router pages
-│   │   ├── components/     # React components
-│   │   └── lib/           # Utilities & API client
-├── shared/                 # Shared TypeScript types
-└── docs/                  # Project documentation
-```
-
-## 📚 Documentation
-
-- **[Project Plan](docs/ANTE_Project_Plan.md)**: Complete PRD and roadmap
-- **[API Reference](docs/API.md)**: All API endpoints
-- **[Backend Guide](docs/BACKEND.md)**: Backend architecture and setup
-- **[Frontend Guide](docs/FRONTEND.md)**: Frontend development guide
-- **[Development Guide](docs/DEVELOPMENT.md)**: Development setup and workflows
-- **[Deployment Guide](docs/DEPLOYMENT.md)**: Production deployment instructions
-- **[Rust MCP Setup](docs/RUST_MCP_SETUP.md)**: Rust development with MCP server
-
-## 🤖 MCP Servers (Model Context Protocol)
-
-This project includes MCP servers for AI-assisted development:
-
-- **stage-mcp-server**: Manages Stage canvas editor operations
-- **wasmer-mcp-server**: Handles Wasmer.io deployment operations
-- **rust-mcp-server**: Enables Rust development with cargo commands
-
-See [Rust MCP Setup Guide](docs/RUST_MCP_SETUP.md) for configuration instructions.
-
-## 🔐 Authentication
-
-ANTE Poker uses **Solana wallet-based authentication**:
-
-1. User connects wallet (Phantom, Solflare, etc.)
-2. Wallet address becomes user identity
-3. User creates username (stored in database)
-4. All actions authenticated via wallet signature
-
-**No passwords, no emails** - just Web3 wallet connection.
-
-## 💵 Mock Mode (Development)
-
-The platform includes a full-featured **Mock Mode** for development and testing:
-
-- **Per-user mock balances**: Each user has their own `mockAnteBalance` in the database
-- **Debug faucet**: Get 1,000 mock $ANTE anytime via `/dev/mock-airdrop`
-- **Bot players**: AI opponents for solo testing
-- **Dev game setup**: Create games with custom settings and bot counts
-- **Ecosystem simulation**: Rake collection, bad beat logging, and rewards distribution all work in mock mode
-
-Mock mode automatically activates when `ANTE_TOKEN_MINT_ADDRESS` is not set in environment variables.
-
-## 🎯 Current Status
-
-### ✅ Completed (Phase 2: Off-chain MVP)
-
-- ✅ Solana wallet authentication
-- ✅ User identity system (wallet address + username)
-- ✅ Cash game hosting and joining
-- ✅ Game lobby with real-time updates
-- ✅ Tournament system (registration, auto-start, eliminations, payouts)
-- ✅ Rake collection (2% from every pot)
-- ✅ Bad beat logging
-- ✅ Leaderboard and stats tracking
-- ✅ Monthly rewards distribution
-- ✅ Merch store (mock balance integration)
-- ✅ Bot AI players
-- ✅ Mock mode with per-user balances
-- ✅ Developer tools and debug panel
-
-### 🚧 In Progress / Planned
-
-- ⚠️ Real Solana token integration (Phase 3)
-- ⚠️ On-chain escrow contracts
-- ⚠️ Transaction verification
-- ⚠️ Email notifications
-- ⚠️ Telegram/Discord bot integration (Discord bot service exists, needs configuration)
-- ⚠️ NFT redeemable merch
-- ⚠️ Advanced analytics dashboard
-- ⚠️ Redis caching layer
-- ⚠️ Comprehensive automated testing
-
-## 🧪 Testing
-
-### Development Mode
-
-1. **Connect Wallet**: Use Phantom wallet set to Devnet
-2. **Get Mock Balance**: Use debug faucet in `/dev` panel
-3. **Host Game**: Create a cash game from `/host` page
-4. **Join Games**: Browse lobby and join available games
-5. **Play**: Full poker gameplay with bot opponents
-
-### Dev Tools
-
-Access the developer panel at `/dev`:
-- Create dev games with bots
-- Seed test tournaments
-- Seed mock products
-- Run monthly payouts
-- View ecosystem stats
-
-## 📊 API Endpoints
-
-### Authentication
-- `POST /api/auth/connect` - Connect wallet and create/authenticate user
-- `GET /api/users/me` - Get current user profile
-
-### Games
-- `POST /api/games/host` - Host a new cash game
-- `GET /api/games/lobby` - Get available games
-- `POST /api/games/:id/join` - Join a game
-- `POST /api/games/:id/action` - Perform game action
-
-### Tournaments
-- `GET /api/tournaments` - List all tournaments
-- `POST /api/tournaments/:id/register` - Register for tournament
-
-### Leaderboard
-- `GET /api/users` - Get leaderboard (sorted by handsWon)
-
-### Merch Store
-- `GET /api/merch` - List products
-- `POST /api/merch/buy/:id` - Purchase product
-
-### Developer Tools (Development Only)
-- `POST /api/dev/mock-airdrop` - Get mock $ANTE
-- `POST /api/dev/create-game` - Create dev game with bots
-- `POST /api/dev/seed-tournament` - Create test tournament
-- `POST /api/dev/seed-merch` - Create mock products
-- `POST /api/dev/run-payout` - Run monthly rewards distribution
-- `GET /api/dev/ecosystem-stats` - Get ecosystem statistics
-
-### Wallet & Streaming
-- `GET /api/wallet/balance` - Get $ANTE token balance
-- `POST /api/wallet/verify-buy-in` - Verify buy-in transaction
-- `GET /api/wallet/hosting-eligibility` - Check hosting eligibility
-- `GET /api/stream/games/:gameId` - Get streaming status
-- `POST /api/stream/games/:gameId/start` - Start streaming
-- `POST /api/stream/games/:gameId/stop` - Stop streaming
-
-### Health Checks
-- `GET /health` - Basic health check
-- `GET /health/solana` - Solana connection health check
-
-See [API.md](docs/API.md) for complete API documentation.
-
-## 🔒 Security
-
-- **Wallet Signature Verification**: All authenticated requests verify Solana signatures
-- **Rate Limiting**: API endpoints protected with rate limits
-- **Input Validation**: All inputs validated and sanitized
-- **CORS**: Configured for production security
-- **Helmet**: Security headers middleware
-- **Error Handling**: Comprehensive error handling and logging
-
-## 🤝 Contributing
-
-See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for contribution guidelines.
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 🆘 Support
-
-- **Documentation**: See `docs/` folder
-- **Issues**: Report bugs via GitHub Issues
-- **Discord**: [Join our community](https://discord.gg/ante-poker)
+<div align="center">
+  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=40&pause=1000&color=36BCF7&center=true&vCenter=true&width=1000&lines=GameDay;Your+ultimate+portal+for+everything+gaming.;Discover+games%2C+track+tournaments%2C+and+shop+for+exclusive+merch." alt="Typing SVG" /></a>
+  <img src="public/globe.svg" alt="GameDay Logo" width="150"/>
+
+  <!-- Badges -->
+  <p>
+    <a href="https://github.com/Snapwave333/ProjectBlueBird/blob/main/LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+    <img src="https://img.shields.io/badge/status-in%20development-yellow.svg" alt="Status: In Development">
+    <a href="https://github.com/Snapwave333/ProjectBlueBird/fork"><img src="https://img.shields.io/github/forks/Snapwave333/ProjectBlueBird.svg" alt="Forks"></a>
+    <a href="https://github.com/Snapwave333/ProjectBlueBird/stargazers"><img src="https://img.shields.io/github/stars/Snapwave333/ProjectBlueBird.svg" alt="Stars"></a>
+    <a href="https://github.com/Snapwave333/ProjectBlueBird/issues"><img src="https://img.shields.io/github/issues/Snapwave333/ProjectBlueBird.svg" alt="Open Issues"></a>
+  </p>
+</div>
 
 ---
 
-**Built with ❤️ for the Solana ecosystem**
+## 🌟 About The Project
+
+GameDay is a one-stop platform for gamers. Whether you're a casual player or a competitive enthusiast, GameDay has something for you.
+
+**Key Features:**
+*   🎮 **Games:** Explore a vast library of games, read reviews, and find your next favorite.
+*   🏆 **Tournaments:** Stay updated on the latest esports tournaments, track schedules, and follow your favorite teams.
+*   👕 **Merchandise:** Browse and purchase official merchandise from the biggest names in gaming.
+
+<br/>
+
+![App Screenshot](public/screenshot.png) <!-- Placeholder for a real screenshot -->
+
+### 🛠️ Built With
+
+This project is built with the latest and greatest technologies to ensure a smooth and performant user experience.
+
+| Technology | Badge |
+|---|---|
+| Next.js | <img src="https://img.shields.io/badge/Next.js-14-black?logo=next.js" alt="Next.js 14"> |
+| React | <img src="https://img.shields.io/badge/React-18-blue?logo=react" alt="React 18"> |
+| TypeScript | <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" alt="TypeScript 5"> |
+| Tailwind CSS | <img src="https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?logo=tailwind-css" alt="Tailwind CSS 3"> |
+| Firebase | <img src="https://img.shields.io/badge/Firebase-10-FFCA28?logo=firebase" alt="Firebase 10"> |
+
+---
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    A[Client Browser] --> B{Next.js App};
+    B --> C[React Server Components];
+    B --> D[API Routes];
+    C --> E[Data Fetching];
+    D --> F[Firebase Admin SDK];
+    E --> G[External APIs];
+    F --> H[Firebase Services];
+    subgraph Firebase
+        H --> I[Authentication];
+        H --> J[Firestore];
+        H --> K[Storage];
+    end
+
+    style B fill:#000,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#222,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#222,stroke:#333,stroke-width:2px,color:#fff
+    style F fill:#F5820D,stroke:#333,stroke-width:2px,color:#fff
+    style H fill:#F5820D,stroke:#333,stroke-width:2px,color:#fff
+    style I fill:#F5820D,stroke:#333,stroke-width:2px,color:#fff
+    style J fill:#F5820D,stroke:#333,stroke-width:2px,color:#fff
+    style K fill:#F5820D,stroke:#333,stroke-width:2px,color:#fff
+```
+
+---
+
+## 🚀 Getting Started
+
+To get a local copy up and running, follow these simple steps.
+
+### Prerequisites
+
+Make sure you have Node.js and npm installed on your machine.
+*   npm
+    ```sh
+    npm install npm@latest -g
+    ```
+
+### Installation
+
+1.  Clone the repo
+    ```sh
+    git clone https://github.com/Snapwave333/ProjectBlueBird.git
+    ```
+2.  Install NPM packages
+    ```sh
+    npm install
+    ```
+3.  Run the development server
+    ```sh
+    npm run dev
+    ```
+
+---
+
+## 🗺️ Roadmap
+
+We have an exciting roadmap ahead of us! Here are some of the features we're currently working on:
+
+*   [x] User authentication and profiles
+*   [x] Real-time tournament data integration
+*   [x] E-commerce functionality for the merch store
+*   [x] Social features to connect with other gamers
+
+See the [open issues](https://github.com/Snapwave333/ProjectBlueBird/issues) for a full list of proposed features (and known issues).
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+---
+
+## 📬 Contact
+
+Your Name - [@your_twitter](https://twitter.com/your_twitter) - email@example.com
+
+Project Link: [https://github.com/Snapwave333/ProjectBlueBird](https://github.com/Snapwave333/ProjectBlueBird)
