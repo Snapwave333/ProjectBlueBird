@@ -26,7 +26,7 @@ function notify() {
   subs.forEach(s => s(snapshot))
 }
 
-export function subscribe(fn: Sub) {
+export function subscribe(fn: Sub): () => void {
   subs.add(fn)
   fn([...lobbies])
   return () => { subs.delete(fn) }

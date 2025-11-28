@@ -10,7 +10,7 @@ export const GameLobby = () => {
     useEffect(() => {
         const unsub = subscribe(setGames)
         ensureTicker()
-        return () => unsub()
+        return unsub
     }, [])
     return (
         <div className="p-6 max-w-7xl mx-auto mt-12">
