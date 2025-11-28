@@ -1,40 +1,35 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
-import { AuthProvider } from '@/context/AuthContext';
-import Link from 'next/link';
+import { AppWalletProvider } from '@/components/WalletProvider';
+import { Navbar } from '@/components/Navbar';
+import { TransactionHistory } from '@/components/TransactionHistory';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 
 export const metadata: Metadata = {
-  title: 'GameDay',
-  description: 'Your ultimate portal for everything gaming.',
+    title: 'ANTE Poker | Web3 Texas Hold\'em',
+    description: 'The premier Web3 poker platform on Solana.',
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body className={`${inter.className} bg-background text-text`}>
-        <AuthProvider>
-          <nav className="bg-surface p-6">
-            <div className="container mx-auto flex justify-around items-center">
-              <Link href="/" className="text-primary text-3xl font-bold">GameDay</Link>
-              <div className="space-x-8">
-                <Link href="/tournaments" className="text-text hover:text-primary transition-colors">Tournaments</Link>
-                <Link href="/merch" className="text-text hover:text-primary transition-colors">Merch</Link>
-                <Link href="/profile" className="text-text hover:text-primary transition-colors">Profile</Link>
-                <Link href="/login" className="text-text hover:text-primary transition-colors">Login</Link>
-                <Link href="/signup" className="text-text hover:text-primary transition-colors">Sign Up</Link>
-              </div>
-            </div>
-          </nav>
-          {children}
-        </AuthProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+            <body className="font-sans antialiased selection:bg-pink-500/30">
+                <div className="fixed inset-0 grid-bg bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] pointer-events-none opacity-20"></div>
+                <AppWalletProvider>
+                    <Navbar />
+                    <TransactionHistory />
+                    <main className="relative z-10">
+                        {children}
+                    </main>
+                </AppWalletProvider>
+            </body>
+        </html>
+    );
 }

@@ -1,92 +1,54 @@
-export const tournaments = [
-  {
-    id: 1,
-    name: 'The International 12',
-    game: 'Dota 2',
-    prizePool: '$40,000,000',
-    startDate: '2024-10-12',
-    teams: ['Team Secret', 'OG', 'Team Liquid', 'Evil Geniuses'],
-  },
-  {
-    id: 2,
-    name: 'League of Legends World Championship',
-    game: 'League of Legends',
-    prizePool: '$2,225,000',
-    startDate: '2024-10-05',
-    teams: ['T1', 'Gen.G', 'JD Gaming', 'DRX'],
-  },
-  {
-    id: 3,
-    name: 'Valorant Champions 2024',
-    game: 'Valorant',
-    prizePool: '$2,500,000',
-    startDate: '2024-08-26',
-    teams: ['Sentinels', 'Fnatic', 'LOUD', 'Paper Rex'],
-  },
+export const MOCK_TOURNAMENTS = [
+    {
+        id: '1',
+        name: "Sunday Million High Roller",
+        prizePool: 1000000,
+        buyIn: 5000,
+        startTime: "Sunday, 18:00 UTC",
+        registered: 142,
+        status: "Registering",
+        image: "/tournament-1.jpg"
+    },
+    {
+        id: '2',
+        name: "Daily Deepstack",
+        prizePool: 50000,
+        buyIn: 100,
+        startTime: "Today, 20:00 UTC",
+        registered: 856,
+        status: "Late Reg",
+        image: "/tournament-2.jpg"
+    },
+    {
+        id: '3',
+        name: "Turbo Bounty Hunter",
+        prizePool: 25000,
+        buyIn: 50,
+        startTime: "Starting in 15m",
+        registered: 320,
+        status: "Registering",
+        image: "/tournament-3.jpg"
+    }
 ];
 
-export const merchandise = [
-  {
-    id: 1,
-    name: 'GameDay Logo T-Shirt',
-    price: '$25.00',
-    image: '/merch/t-shirt.png',
-  },
-  {
-    id: 2,
-    name: 'GameDay Hoodie',
-    price: '$50.00',
-    image: '/merch/hoodie.png',
-  },
-  {
-    id: 3,
-    name: 'GameDay Cap',
-    price: '$20.00',
-    image: '/merch/cap.png',
-  },
-  {
-    id: 4,
-    name: 'GameDay Mug',
-    price: '$15.00',
-    image: '/merch/mug.png',
-  },
-  {
-    id: 5,
-    name: 'GameDay Poster',
-    price: '$10.00',
-    image: '/merch/poster.png',
-  },
+export const MOCK_LEADERBOARD = [
+    { rank: 1, username: "PokerKing_SOL", earnings: 450200, avatar: "👑", winRate: "62%" },
+    { rank: 2, username: "DiamondHands", earnings: 320500, avatar: "💎", winRate: "58%" },
+    { rank: 3, username: "BluffMaster99", earnings: 280000, avatar: "🃏", winRate: "55%" },
+    { rank: 4, username: "CryptoShark", earnings: 210000, avatar: "🦈", winRate: "54%" },
+    { rank: 5, username: "MoonBoi", earnings: 180000, avatar: "🚀", winRate: "51%" },
 ];
 
-export const users = [
-  {
-    id: 1,
-    name: 'PlayerOne',
-    bio: 'Professional Valorant player. I stream on Twitch.',
-    social: {
-      twitter: 'https://twitter.com/playerone',
-      twitch: 'https://www.twitch.tv/playerone',
-    },
-    following: [2, 3],
-  },
-  {
-    id: 2,
-    name: 'GamerGirl92',
-    bio: 'Casual gamer and streamer. I play a variety of games.',
-    social: {
-      twitter: 'https://twitter.com/gamergirl92',
-      twitch: 'https://www.twitch.tv/gamergirl92',
-    },
-    following: [1],
-  },
-  {
-    id: 3,
-    name: 'ProGamer',
-    bio: 'Dota 2 enthusiast and competitive player.',
-    social: {
-      twitter: 'https://twitter.com/progamer',
-      twitch: 'https://www.twitch.tv/progamer',
-    },
-    following: [1, 2],
-  },
-];
+export const MOCK_USER_STATS = {
+    username: "PlayerOne",
+    walletAddress: "8x...3f9a",
+    totalEarnings: 12500,
+    handsPlayed: 1420,
+    bestHand: "Royal Flush",
+    tournamentsWon: 2,
+    recentActivity: [
+        { id: 1, type: "Cash Game", result: "+$450", date: "2h ago" },
+        { id: 2, type: "Tournament", result: "-$100", date: "1d ago" },
+        { id: 3, type: "Cash Game", result: "+$1,200", date: "2d ago" },
+    ]
+};

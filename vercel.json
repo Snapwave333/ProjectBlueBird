@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ],
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "outputDirectory": "./.next",
+  "framework": "nextjs"
+}

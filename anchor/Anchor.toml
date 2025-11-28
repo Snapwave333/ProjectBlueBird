@@ -1,0 +1,8 @@
+[program]
+name = "ante_poker"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[features]
+default = []
