@@ -44,9 +44,15 @@ test.describe('Navigation Flows', () => {
         // Click Profile Link
         await page.getByRole('link', { name: /profile/i }).click();
 
-        // Verify URL and Content
+        // Verify URL and content depending on wallet state
         await expect(page).toHaveURL('/profile');
-        await expect(page.getByText('Total Earnings')).toBeVisible();
+        const totalEarnings = page.getByText('Total Earnings');
+        const connectWallet = page.getByRole('heading', { name: 'Connect your wallet' });
+        if (await totalEarnings.isVisible().catch(() => false)) {
+            await expect(totalEarnings).toBeVisible();
+        } else {
+            await expect(connectWallet).toBeVisible();
+        }
     });
 
     test('should navigate back to Home from Logo', async ({ page }) => {

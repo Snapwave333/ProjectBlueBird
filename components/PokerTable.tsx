@@ -3,7 +3,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { User, DollarSign } from 'lucide-react';
 import { BOT_DIFFICULTY } from '@/lib/config/bots'
-import { countBots, delayFor } from '@/lib/services/bot.service'
+import { countBots } from '@/lib/services/bot.service'
+import { scoreStrength, decideBetting, progressStreet, resolveShowdown } from '@/lib/ai/poker-ai'
+import { joinHuman, leaveHuman } from '@/lib/stores/lobby-store'
+import { createDeck, dealCommunityCards, Card } from '@/lib/poker-engine'
+import { recordAction } from '@/lib/ai/opponent-model'
+import { getStats, recordLoss } from '@/lib/ai/risk-manager'
+import { getStrategyParams } from '@/lib/ai/strategy-store'
+import { StrategyAdmin } from '@/components/StrategyAdmin'
 
 interface Player {
     id: string;
@@ -34,9 +41,13 @@ export const PokerTable = ({ gameId }: { gameId: string }) => {
     }, [botCount, gameId])
     const [players, setPlayers] = useState<Player[]>(initialPlayers);
 
-    const [communityCards, setCommunityCards] = useState<string[]>(['As', 'Ks', '7d']);
+    const [communityCards, setCommunityCards] = useState<string[]>([]);
     const [pot, setPot] = useState(150);
     const acting = useRef<NodeJS.Timeout | null>(null)
+    const [stage, setStage] = useState<'preflop'|'flop'|'turn'|'river'|'showdown'>('preflop')
+    const [deck, setDeck] = useState<Card[]>([])
+    const [roundActions, setRoundActions] = useState(0)
+    const [lastAction, setLastAction] = useState<{ playerId: string; action: 'fold'|'check'|'call'|'raise'|'bet' }|null>(null)
 
     function advanceTurn() {
         setPlayers(prev => {
@@ -47,33 +58,62 @@ export const PokerTable = ({ gameId }: { gameId: string }) => {
     }
 
     function performBotAction(bot: Player) {
-        const delay = delayFor(BOT_DIFFICULTY)
-        if (acting.current) clearTimeout(acting.current as any)
-        acting.current = setTimeout(() => {
-            const roll = Math.random()
-            if (roll < 0.3) { // fold
-                setPlayers(prev => prev.map(p => p.id === bot.id ? { ...p, cards: [] } : p))
-            } else if (roll < 0.6) { // check
-                // no state change
-            } else { // bet
-                const bet = Math.min(50, bot.chips)
-                setPot(prev => prev + bet)
-                setPlayers(prev => prev.map(p => p.id === bot.id ? { ...p, chips: p.chips - bet } : p))
-            }
-            advanceTurn()
-        }, delay)
+        const idx = players.findIndex(p => p.id === bot.id)
+        const pos = idx >= 0 ? idx : 0
+        const { tier } = scoreStrength(bot.cards, communityCards, pos, players.length)
+        const decision = decideBetting({ pot, betToCall: 0, bankroll: bot.chips, tier, street: stage, nPlayers: players.length, effectiveStack: bot.chips, sessionId: `${gameId}-${bot.id}`, prevAction: lastAction || undefined, opponentId: lastAction?.playerId })
+        const amount = Math.floor(decision.amount || 0)
+        if (decision.action === 'fold') {
+            setPlayers(prev => prev.map(p => p.id === bot.id ? { ...p, cards: [] } : p))
+        } else if (decision.action === 'bet' || decision.action === 'raise') {
+            setPot(prev => prev + amount)
+            setPlayers(prev => prev.map(p => p.id === bot.id ? { ...p, chips: Math.max(0, p.chips - amount) } : p))
+            const maxLoss = getStrategyParams().risk.maxLoss
+            recordLoss(`${gameId}-${bot.id}`, amount, maxLoss)
+        }
+        setLastAction({ playerId: bot.id, action: decision.action })
+        recordAction(bot.id, decision.action, lastAction || undefined)
+        setRoundActions(v => v + 1)
+        advanceTurn()
     }
 
     useEffect(() => {
+        joinHuman(gameId)
         const current = players.find(p => p.isTurn)
         if (!current) return
-        if (current.isBot) {
-            performBotAction(current)
-        }
+        if (current.isBot) performBotAction(current)
         return () => {
             if (acting.current) { clearTimeout(acting.current as any); acting.current = null }
+            leaveHuman(gameId)
         }
     }, [players])
+
+    useEffect(() => {
+        if (deck.length === 0) {
+            setDeck(createDeck())
+        }
+    }, [deck])
+
+    useEffect(() => {
+        if (roundActions >= players.length) {
+            setRoundActions(0)
+            const next = progressStreet(stage)
+            setStage(next)
+            if (next === 'flop' || next === 'turn' || next === 'river') {
+                const res = dealCommunityCards(deck, next)
+                setDeck(res.deck)
+                setCommunityCards(prev => [...prev, ...res.cards.map(c => `${c.rank}${c.suit}`)])
+            }
+            if (next === 'showdown') {
+                const winners = resolveShowdown(players.map(p => ({ id: p.id, cards: p.cards })), communityCards)
+                if (winners.length > 0) {
+                    const award = Math.floor(pot / winners.length)
+                    setPlayers(prev => prev.map(p => winners.includes(p.id) ? { ...p, chips: p.chips + award } : p))
+                }
+                setPot(0)
+            }
+        }
+    }, [roundActions, stage, deck, players, communityCards, pot])
 
     // Helper to render card visuals
     const renderCard = (cardCode: string) => {
@@ -137,12 +177,17 @@ export const PokerTable = ({ gameId }: { gameId: string }) => {
                         </div>
 
                         {/* Info Box */}
-                        <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-lg p-2 text-center min-w-[100px]">
+                        <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-lg p-2 text-center min-w-[120px]">
                             <div className="font-bold text-sm text-white truncate max-w-[100px]">{player.name}{player.isBot ? ' (BOT)' : ''}</div>
                             <div className="text-green-400 text-xs font-mono font-bold flex items-center justify-center gap-1">
                                 <DollarSign size={10} />
                                 {player.chips}
                             </div>
+                            {player.isBot && (
+                              <div className="text-zinc-400 text-[10px] font-mono">
+                                loss: {getStats(`${gameId}-${player.id}`).loss}
+                              </div>
+                            )}
                         </div>
 
                         {/* Cards */}
@@ -163,6 +208,7 @@ export const PokerTable = ({ gameId }: { gameId: string }) => {
                 <button className="px-8 py-3 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/50 text-blue-500 rounded-xl font-bold transition-all hover:scale-105 uppercase tracking-wide">Check</button>
                 <button className="px-8 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold transition-all hover:scale-105 shadow-lg shadow-green-500/20 uppercase tracking-wide">Bet 50</button>
             </div>
+            <StrategyAdmin />
         </div>
     );
 };

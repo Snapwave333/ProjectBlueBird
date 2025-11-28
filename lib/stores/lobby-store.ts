@@ -29,7 +29,7 @@ function notify() {
 export function subscribe(fn: Sub) {
   subs.add(fn)
   fn([...lobbies])
-  return () => subs.delete(fn)
+  return () => { subs.delete(fn) }
 }
 
 export function getLobbies() {

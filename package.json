@@ -10,7 +10,8 @@
     "token:create:devnet": "node scripts/create-devnet-token.js",
     "user:add:developer": "node scripts/add-developer.js",
     "export": "next export -o out",
-    "build:static": "next build && next export -o out"
+    "build:static": "next build && next export -o out",
+    "test:ai": "tsx tests/ai/poker-ai.test.ts && tsx tests/ai/flow-sim.test.ts && tsx tests/ai/engine-cases.test.ts && tsx tests/ai/probabilistic.test.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
@@ -44,6 +45,9 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.19.2"
   }
 }

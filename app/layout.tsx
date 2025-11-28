@@ -21,7 +21,7 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
             <body className="font-sans antialiased selection:bg-pink-500/30">
-                <div className="fixed inset-0 grid-bg bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] pointer-events-none opacity-20"></div>
+                <div className="fixed inset-0 bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] pointer-events-none opacity-20"></div>
                 <AppWalletProvider>
                     <Navbar />
                     <TransactionHistory />

@@ -328,7 +328,7 @@ export function dealCards(deck: Card[], numPlayers: number): { playerHands: Card
         }
     }
 
-    logger.debug('cards-dealt', `Dealt cards to ${numPlayers} players`, {
+    logger.debug(`cards-dealt: Dealt cards to ${numPlayers} players`, {
         playersCount: numPlayers,
         cardsDealt: cardsNeeded,
         deckRemaining: deckCopy.length
@@ -404,7 +404,7 @@ export function dealCommunityCards(deck: Card[], stage: GameState['stage']): { c
         cards.push(card);
     }
 
-    logger.debug('community-cards-dealt', `Dealt ${numCards} cards for ${stage}`, {
+    logger.debug(`community-cards-dealt: Dealt ${numCards} cards for ${stage}`, {
         stage,
         cardsDealt: numCards,
         deckRemaining: deckCopy.length
